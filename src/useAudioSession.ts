@@ -7,12 +7,5 @@ import { AudioSession } from '@livekit/react-native';
 //   Common mistake: never stopping it → after hanging up, music/YouTube stays in "call mode" (quiet, earpiece).
 //   Terms: audio session, audio focus, AudioManager (Android) / AVAudioSession (iOS).
 export function useAudioSession() {
-  // @sol-start L2-09 blank
-  useEffect(() => {
-    AudioSession.startAudioSession();
-    return () => {
-      AudioSession.stopAudioSession();
-    };
-  }, []);
-  // @sol-end
+  // TODO(L2-09)
 }

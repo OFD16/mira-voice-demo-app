@@ -32,15 +32,7 @@ const TYPES = new Set(['transcript', 'latency', 'safety', 'memory', 'pipeline'])
 //   Common mistake: JSON.parse without try/catch → red screen the first time the server ships a new event type.
 //   Terms: data channel, payload, schema/contract, forward compatibility. Test: npm test -- events
 export function parseEvent(payload: Uint8Array): MiraEvent | null {
-  // @sol-start L2-07
-  try {
-    const obj = JSON.parse(utf8(payload));
-    if (!obj || typeof obj !== 'object' || !TYPES.has(obj.type)) return null;
-    return obj as MiraEvent;
-  } catch {
-    return null;
-  }
-  // @sol-end
+  throw new Error('TODO(L2-07) — see docs/LESSONS.md');
 }
 
 export type Line = { role: 'user' | 'assistant'; text: string; interrupted: boolean; at: number; latencyMs?: number };
@@ -63,31 +55,7 @@ export const initialCallState: CallState = { lines: [], latencies: [], safetyAle
 //   Common mistake: `state.lines.push(...)` → React doesn't re-render (same reference).
 //   Terms: immutable update, reducer, derived state. Test: npm test -- events
 export function reduceCall(state: CallState, ev: MiraEvent): CallState {
-  // @sol-start L2-08
-  switch (ev.type) {
-    case 'transcript': {
-      if (!ev.text.trim()) return state;
-      const line: Line = { role: ev.role, text: ev.text, interrupted: ev.interrupted, at: ev.at };
-      return { ...state, lines: [...state.lines, line].slice(-200) };
-    }
-    case 'latency': {
-      const lines = [...state.lines];
-      for (let i = lines.length - 1; i >= 0; i--) {
-        if (lines[i].role === 'assistant' && lines[i].latencyMs == null) {
-          lines[i] = { ...lines[i], latencyMs: ev.totalMs };
-          break;
-        }
-      }
-      return { ...state, lines, latencies: [...state.latencies, ev.totalMs] };
-    }
-    case 'safety':
-      return { ...state, safetyAlert: state.safetyAlert || ev.flagged, lastSafetyMs: ev.ms };
-    case 'memory':
-      return { ...state, newFacts: [...state.newFacts, ev.fact] };
-    case 'pipeline':
-      return { ...state, pipeline: ev.pipeline };
-  }
-  // @sol-end
+  throw new Error('TODO(L2-08) — see docs/LESSONS.md');
 }
 
 export function p50p95(xs: number[]): { p50: number; p95: number } | null {

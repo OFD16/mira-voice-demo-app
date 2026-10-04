@@ -8,16 +8,5 @@ import { PermissionsAndroid, Platform } from 'react-native';
 //   Common mistake: only the manifest entry → call connects, agent talks, but never hears you.
 //   Terms: dangerous permission, runtime permission.
 export async function ensureMicPermission(): Promise<boolean> {
-  // @sol-start L2-06
-  if (Platform.OS !== 'android') return true;
-  const mic = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, {
-    title: 'Microphone',
-    message: 'Mira needs your microphone to hear you.',
-    buttonPositive: 'Allow',
-  });
-  if (Number(Platform.Version) >= 31) {
-    await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT).catch(() => undefined);
-  }
-  return mic === PermissionsAndroid.RESULTS.GRANTED;
-  // @sol-end
+  throw new Error('TODO(L2-06) — see docs/LESSONS.md');
 }

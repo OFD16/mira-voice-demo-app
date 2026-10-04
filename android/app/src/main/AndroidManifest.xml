@@ -5,12 +5,7 @@
          RECORD_AUDIO, MODIFY_AUDIO_SETTINGS, ACCESS_NETWORK_STATE, BLUETOOTH_CONNECT (Android 12+ headsets).
          Declaring is NOT enough for RECORD_AUDIO: it is a "dangerous" permission → also ask at runtime (L2-06).
          Common mistake: mic works on the emulator, silent on a real phone. -->
-    <!-- @sol-start L2-03 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <!-- @sol-end -->
+    <!-- TODO(L2-03) -->
 
     <application
       android:name=".MainApplication"
