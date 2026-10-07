@@ -77,3 +77,11 @@ yarn-error.log
 # local config / secrets
 src/config.local.json
 .env
+
+# Release signing + release API config (never commit)
+android/keystore.properties
+src/config.release.json
+dist/
+# JVM crash dumps
+hs_err_pid*.log
+replay_pid*.log

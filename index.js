@@ -3,10 +3,10 @@
  */
 
 import { AppRegistry } from 'react-native';
-// TODO(L2-01): Import and call `registerGlobals()` from '@livekit/react-native' BEFORE anything else runs.
-//   It installs WebRTC globals (RTCPeerConnection, MediaStream…) that livekit-client expects to exist.
-//   Common mistake: forgetting it → "ReferenceError: Property 'RTCPeerConnection' doesn't exist" / "WebRTC isn't detected".
-// TODO(L2-01)
+import { registerGlobals } from '@livekit/react-native';
+// L2-01: installs WebRTC globals (RTCPeerConnection, MediaStream…) that livekit-client expects to exist.
+// Must run before the app renders/connects. Forgetting it → "WebRTC isn't detected".
+registerGlobals();
 import App from './App';
 import { name as appName } from './app.json';
 

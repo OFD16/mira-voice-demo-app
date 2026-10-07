@@ -11,7 +11,8 @@
     "postinstall": "node -e \"const f=require('fs');f.existsSync('src/config.local.json')||f.copyFileSync('src/config.local.example.json','src/config.local.json')\"",
     "typecheck": "tsc --noEmit",
     "make-exercise": "node scripts/make-exercise.mjs",
-    "reverse": "adb reverse tcp:3000 tcp:3000"
+    "reverse": "adb reverse tcp:3000 tcp:3000",
+    "release:apk": "node scripts/build-release.mjs"
   },
   "dependencies": {
     "@livekit/components-react": "^2.9.24",

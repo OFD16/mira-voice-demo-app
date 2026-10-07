@@ -21,6 +21,7 @@ import {
 import { ConnectionState } from 'livekit-client';
 import { deleteMemory, fetchMemories, fetchSession, type MemoryRow, type Pipeline, type SessionInfo } from './src/api';
 import { EVENTS_TOPIC, initialCallState, type Line, p50p95, parseEvent, reduceCall } from './src/events';
+import { deviceLang } from './src/locale';
 import { ensureMicPermission } from './src/permissions';
 import { useAudioSession } from './src/useAudioSession';
 
@@ -39,7 +40,7 @@ export default function App() {
     setBusy(true);
     try {
       if (!(await ensureMicPermission())) throw new Error('Microphone permission denied');
-      setSession(await fetchSession(userId.trim(), pipeline));
+      setSession(await fetchSession(userId.trim(), pipeline, deviceLang()));
       setScreen('call');
     } catch (e) {
       setError(String(e instanceof Error ? e.message : e));

@@ -6,8 +6,8 @@ import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
-// TODO(L2-02a): import com.livekit.reactnative.LiveKitReactNative and com.livekit.reactnative.audio.AudioType
-// TODO(L2-02a)
+import com.livekit.reactnative.LiveKitReactNative
+import com.livekit.reactnative.audio.AudioType
 
 class MainApplication : Application(), ReactApplication {
 
@@ -23,10 +23,9 @@ class MainApplication : Application(), ReactApplication {
   }
 
   override fun onCreate() {
-    // TODO(L2-02b): Call LiveKitReactNative.setup(this, AudioType.CommunicationAudioType()) BEFORE super.onCreate().
-    //   CommunicationAudioType = voice-call mode: hardware echo cancellation (AEC) on, routes to earpiece/speaker correctly.
-    //   Common mistake: MediaAudioType for a 2-way voice app → the agent hears itself and interrupts itself.
-    // TODO(L2-02b)
+    // L2-02: voice-call audio mode, set up BEFORE super.onCreate(). CommunicationAudioType turns on hardware
+    // echo cancellation (AEC); MediaAudioType would let the agent hear itself and interrupt itself.
+    LiveKitReactNative.setup(this, AudioType.CommunicationAudioType())
     super.onCreate()
     loadReactNative(this)
   }

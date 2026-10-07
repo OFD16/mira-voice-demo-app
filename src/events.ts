@@ -32,7 +32,15 @@ const TYPES = new Set(['transcript', 'latency', 'safety', 'memory', 'pipeline'])
 //   Common mistake: JSON.parse without try/catch → red screen the first time the server ships a new event type.
 //   Terms: data channel, payload, schema/contract, forward compatibility. Test: npm test -- events
 export function parseEvent(payload: Uint8Array): MiraEvent | null {
-  throw new Error('TODO(L2-07) — see docs/LESSONS.md');
+  try {
+    const obj: unknown = JSON.parse(utf8(payload));
+    if (typeof obj !== 'object' || obj === null) return null;
+    const type = (obj as { type?: unknown }).type;
+    // Unknown type = a newer server: ignore it instead of crashing (forward compatibility).
+    return typeof type === 'string' && TYPES.has(type) ? (obj as MiraEvent) : null;
+  } catch {
+    return null; // one bad packet must never crash the UI
+  }
 }
 
 export type Line = { role: 'user' | 'assistant'; text: string; interrupted: boolean; at: number; latencyMs?: number };
@@ -54,8 +62,30 @@ export const initialCallState: CallState = { lines: [], latencies: [], safetyAle
 //   - pipeline   → set pipeline
 //   Common mistake: `state.lines.push(...)` → React doesn't re-render (same reference).
 //   Terms: immutable update, reducer, derived state. Test: npm test -- events
+const MAX_LINES = 200;
+
 export function reduceCall(state: CallState, ev: MiraEvent): CallState {
-  throw new Error('TODO(L2-08) — see docs/LESSONS.md');
+  switch (ev.type) {
+    case 'transcript': {
+      if (!ev.text.trim()) return state; // same reference = no re-render
+      const line: Line = { role: ev.role, text: ev.text, interrupted: ev.interrupted, at: ev.at };
+      return { ...state, lines: [...state.lines, line].slice(-MAX_LINES) };
+    }
+    case 'latency': {
+      // Attach to the most recent assistant line that has no latency yet.
+      let i = state.lines.length - 1;
+      while (i >= 0 && !(state.lines[i].role === 'assistant' && state.lines[i].latencyMs === undefined)) i--;
+      const lines = i < 0 ? state.lines : state.lines.map((l, j) => (j === i ? { ...l, latencyMs: ev.totalMs } : l));
+      return { ...state, lines, latencies: [...state.latencies, ev.totalMs] };
+    }
+    case 'safety':
+      // Once raised, the alert stays for the rest of the call.
+      return { ...state, safetyAlert: state.safetyAlert || ev.flagged, lastSafetyMs: ev.ms };
+    case 'memory':
+      return { ...state, newFacts: [...state.newFacts, ev.fact] };
+    case 'pipeline':
+      return { ...state, pipeline: ev.pipeline };
+  }
 }
 
 export function p50p95(xs: number[]): { p50: number; p95: number } | null {

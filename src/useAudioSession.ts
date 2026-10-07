@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { AudioSession } from '@livekit/react-native';
 
-// TODO(L2-09): Start the native audio session when the call screen mounts and STOP it on unmount.
-//   useEffect(() => { AudioSession.startAudioSession(); return () => { AudioSession.stopAudioSession(); } }, [])
-//   Start it BEFORE connecting the room (the call screen mounts before <LiveKitRoom connect>).
-//   Common mistake: never stopping it → after hanging up, music/YouTube stays in "call mode" (quiet, earpiece).
-//   Terms: audio session, audio focus, AudioManager (Android) / AVAudioSession (iOS).
+// L2-09: start the native audio session when the call screen mounts (before <LiveKitRoom connect>) and STOP it
+// on unmount. Never stopping it leaves the phone in "call mode" after hang-up (YouTube quiet / from the earpiece).
 export function useAudioSession() {
-  // TODO(L2-09)
+  useEffect(() => {
+    AudioSession.startAudioSession();
+    return () => {
+      AudioSession.stopAudioSession();
+    };
+  }, []);
 }

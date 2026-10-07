@@ -1,4 +1,5 @@
 import { API_URL, DEMO_API_KEY } from './config';
+import type { Lang } from './locale';
 
 export type Pipeline = 'cascaded' | 'realtime';
 export type SessionInfo = { serverUrl: string; roomName: string; token: string };
@@ -20,13 +21,15 @@ async function call(path: string, init: RequestInit = {}, timeoutMs = 8000): Pro
 }
 
 // TODO(L2-05): Ask OUR API for a LiveKit session. The app never creates tokens itself.
-//   - POST `/session` with JSON body { userId, pipeline } via call()
+//   - POST `/session` with JSON body { userId, pipeline, lang } via call()   (lang = device language, see locale.ts)
 //   - !res.ok → throw Error(`session failed: ${res.status}`) (401 = wrong DEMO_API_KEY, 400 = bad userId)
 //   - return the parsed SessionInfo
 //   Common mistake: bundling the LiveKit server SDK into the app and signing tokens with the API secret.
 //   Terms: token server, client/server trust boundary. Test: npm test -- api
-export async function fetchSession(userId: string, pipeline: Pipeline): Promise<SessionInfo> {
-  throw new Error('TODO(L2-05) — see docs/LESSONS.md');
+export async function fetchSession(userId: string, pipeline: Pipeline, lang: Lang): Promise<SessionInfo> {
+  const res = await call('/session', { method: 'POST', body: JSON.stringify({ userId, pipeline, lang }) });
+  if (!res.ok) throw new Error(`session failed: ${res.status}`);
+  return res.json();
 }
 
 export async function fetchMemories(userId: string): Promise<{ memories: MemoryRow[]; enabled: boolean }> {
