@@ -30,6 +30,8 @@ try {
     cwd: p('android'),
     stdio: 'inherit',
     shell: true,
+    // Metro (JS bundle) runs inside Gradle: one transform worker unless LOW_MEM=0.
+    env: lowMem ? { ...process.env, METRO_MAX_WORKERS: process.env.METRO_MAX_WORKERS ?? '1' } : process.env,
   });
 } finally {
   if (backup) fs.writeFileSync(local, backup);
