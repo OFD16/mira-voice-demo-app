@@ -35,8 +35,4 @@ Start the API and agent first (see the api repo).
 `npm run release:apk` builds a signed APK into `dist/`. It needs three gitignored files:
 `src/config.release.json` (`API_URL` must be `https://`), `android/keystore.properties` and the keystore it points to.
 
-## History
-- Tag `learning-v1`: the learning version with guided `TODO(L2-xx)` exercises ([docs/LESSONS.md](docs/LESSONS.md), Turkish).
-- `main`: the complete app.
-
 MIT · built by [Ömer Faruk Demirsoy](https://www.linkedin.com/in/omerfarukdemirsoy)

@@ -26,11 +26,7 @@ export function utf8(bytes: Uint8Array): string {
 
 const TYPES = new Set(['transcript', 'latency', 'safety', 'memory', 'pipeline']);
 
-// TODO(L2-07): Decode a data-channel payload into a MiraEvent.
-//   - bytes → string with utf8() → JSON.parse
-//   - return null for invalid JSON, non-objects, or unknown `type` (never throw: one bad packet must not crash the UI)
-//   Common mistake: JSON.parse without try/catch → red screen the first time the server ships a new event type.
-//   Terms: data channel, payload, schema/contract, forward compatibility. Test: npm test -- events
+// Decodes a data-channel payload. Returns null (never throws) for bad JSON or unknown event types.
 export function parseEvent(payload: Uint8Array): MiraEvent | null {
   try {
     const obj: unknown = JSON.parse(utf8(payload));
@@ -54,14 +50,7 @@ export type CallState = {
 };
 export const initialCallState: CallState = { lines: [], latencies: [], safetyAlert: false, newFacts: [] };
 
-// TODO(L2-08): Pure reducer: (state, event) → new state. Do not mutate `state`.
-//   - transcript → append a Line (skip empty text). Keep at most 200 lines (old ones dropped).
-//   - latency    → push totalMs to latencies AND attach latencyMs to the LAST assistant line that has none
-//   - safety     → safetyAlert = flagged (stays true once flagged during the call), lastSafetyMs = ms
-//   - memory     → append fact to newFacts
-//   - pipeline   → set pipeline
-//   Common mistake: `state.lines.push(...)` → React doesn't re-render (same reference).
-//   Terms: immutable update, reducer, derived state. Test: npm test -- events
+// Pure reducer: (state, event) → new state, never mutates `state`.
 const MAX_LINES = 200;
 
 export function reduceCall(state: CallState, ev: MiraEvent): CallState {
